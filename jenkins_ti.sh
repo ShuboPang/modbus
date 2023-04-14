@@ -18,7 +18,7 @@ function buildTI(){
     cd ${project_path}  && rm ${project_path}/output/* -rf  && 
     ${SDK_path}/linux-devkit/sysroots/x86_64-arago-linux/usr/bin/qt5/qmake ${project_path}/modbus.pro -spec linux-oe-g++ && /usr/bin/make qmake_all && make -j8 && cd ${project_path} && 
     output_path=${project_path}/output/ && 
-    cp ${output_path}/* ${jenkins_output_path}
+    cp ${output_path}/* ${jenkins_output_path} -rf
 }
 
 # 设置需要构建的参数  可选参数

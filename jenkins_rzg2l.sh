@@ -17,7 +17,7 @@ function buildRZG2L(){
     /usr/bin/make qmake_all &&
     make -j8  && 
     output_path=${project_path}/output/ && 
-    cp ${output_path}/* ${jenkins_output_path}
+    cp ${output_path}/* ${jenkins_output_path} -rf
 }
 
 # 设置需要构建的参数  可选参数
