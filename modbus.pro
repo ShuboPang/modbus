@@ -56,7 +56,7 @@ TARGET=$${TARGET}d
 else{
 suffix = $${suffix}_release
 }
-DESTDIR = output/libs/$${suffix}/
+DESTDIR = output/libs/$${suffix}
 OBJECTS_DIR = temp/temp_$${suffix}
 UI_DIR = temp/temp_$${suffix}
 MOC_DIR = temp/temp_$${suffix}
@@ -94,13 +94,13 @@ unix {
 }
 
 
-CONFIG(release, debug|release) {
-contains(DEFINES,HW_ARM_TI){
-unix:QMAKE_POST_LINK += "arm-linux-gnueabihf-strip $${DESTDIR}/$${TARGET} && "
-}
-contains(DEFINES,HW_ARM_RZG2L){
-unix:QMAKE_POST_LINK += "aarch64-poky-linux-strip $${DESTDIR}/$${TARGET} && "
-}
-}
+#CONFIG(release, debug|release) {
+#contains(DEFINES,HW_ARM_TI){
+#unix:QMAKE_POST_LINK += "arm-linux-gnueabihf-strip $${DESTDIR}/$${TARGET} && "
+#}
+#contains(DEFINES,HW_ARM_RZG2L){
+#unix:QMAKE_POST_LINK += "aarch64-poky-linux-strip $${DESTDIR}/$${TARGET} && "
+#}
+#}
 
 unix:QMAKE_POST_LINK += "mkdir output/include/ -p && cp include/*.h  output/include/ "
