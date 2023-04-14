@@ -76,16 +76,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        modbus.cpp \
-    modbusslave.cpp \
-    crc.cpp \
-    modbusmaster.cpp
+        src/modbus.cpp \
+    src/modbusslave.cpp \
+    src/crc.cpp \
+   src/modbusmaster.cpp
 
 HEADERS += \
-        modbus.h \
-    modbusslave.h \
-    crc.h \
-    modbusmaster.h
+        include/modbus.h \
+    include/modbusslave.h \
+    src/crc.h \
+    include/modbusmaster.h
+
+INCLUDEPATH += include/
 unix {
     target.path = /usr/lib
     INSTALLS += target
@@ -101,4 +103,4 @@ unix:QMAKE_POST_LINK += "aarch64-poky-linux-strip $${DESTDIR}/$${TARGET} && "
 }
 }
 
-unix:QMAKE_POST_LINK += "mkdir output/include/ -p && cp *.h  output/include/ "
+unix:QMAKE_POST_LINK += "mkdir output/include/ -p && cp include/*.h  output/include/ "
