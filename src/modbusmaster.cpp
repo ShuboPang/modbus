@@ -1,6 +1,6 @@
 #include "modbusmaster.h"
 
-ModbusMaster::ModbusMaster() {}
+ModbusMaster::ModbusMaster(ModbusType type) { modbus_type_ = type; }
 
 ///
 /// \brief ModbusMaster::hostReadCoils            主站侧读输入线圈 01

@@ -5,7 +5,7 @@
 
 class ModbusSlave : public Modbus {
  public:
-  ModbusSlave();
+  ModbusSlave(ModbusType type);
   virtual ~ModbusSlave() {}
 
  public:

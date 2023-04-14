@@ -5,7 +5,7 @@
 
 class ModbusMaster : public Modbus {
  public:
-  ModbusMaster();
+  ModbusMaster(ModbusType type);
   ///
   /// \brief hostDataProcess      modbus主站侧数据处理
   /// \param recv_data            从站返回的数据

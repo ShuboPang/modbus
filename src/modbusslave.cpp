@@ -1,7 +1,7 @@
 #include "modbusslave.h"
 #include "crc.h"
 
-ModbusSlave::ModbusSlave() {}
+ModbusSlave::ModbusSlave(ModbusType type) { modbus_type_ = type; }
 
 ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
     unsigned char* recv_data, int recv_len, unsigned char* send_data,
