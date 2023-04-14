@@ -103,4 +103,4 @@ unix {
 #}
 #}
 
-unix:QMAKE_POST_LINK += "mkdir output/include/ -p && cp include/*.h  output/include/ "
+unix:QMAKE_POST_LINK += "mkdir output/include -p && cp include/*.h  output/include/ -r"
