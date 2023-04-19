@@ -44,6 +44,17 @@ class ModbusSlave : public Modbus {
   // 读输入寄存器
   virtual ModbusErrorCode slaveReadInputRegsHandle(int addr, int* value);
 
+  ///
+  /// \brief slaveReadCustomHandle          自定义操作
+  /// \param funcode                        功能码
+  /// \param recv_data                      接收到的数据 不包含Modbus ID、功能码 和 校验和
+  /// \param recv_len                       上个参数的长度
+  /// \param send_data                      需要发送的数据 不包含Modbus ID 、功能码 和 校验和
+  /// \param send_len                       发送数据长度
+  /// \return
+  ///
+  virtual ModbusErrorCode slaveReadCustomHandle(uint8_t funcode, const uint8_t* recv_data,int recv_len,uint8_t* send_data,int* send_len);
+
  private:
   ///
   /// \brief dataAnalyze      数据解析

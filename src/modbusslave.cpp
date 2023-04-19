@@ -1,38 +1,49 @@
 #include "modbusslave.h"
 #include "crc.h"
 
+#define MODBUS_RTU_DATA_MIN_LENGTH      5               //< modbus rtu 最小帧长度
+#define MODBUS_TCP_DATA_MIN_LENGTH      9               //< modbus TCP 最小帧长度
+#define MODBUS_ID_POS                   0               //< modbus id 在数据中的位置
+#define MODBUS_FUNCODE_POS              1               //< modbus funcode 在数据中的位置
+#define MODBUS_RTU_CRC_LENGTH           2               //< modbus rtu crc的长度
+#define MODBUS_TCP_HEAD                 6               //< modbus tcp 头部长度
+
 ModbusSlave::ModbusSlave(ModbusType type) { modbus_type_ = type; }
 
 ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
     unsigned char* recv_data, int recv_len, unsigned char* send_data,
     int* send_len) {
   int ret = kModbusExceptionNone;
-  int realPos = 0;
+  int realPos = 0;      //< TCP : 6  rtu:0
   uint32_t tcp_head_count = 0;
   // 数据校验  去除头部和尾部
   if (modbus_type_ == kModbusRtu) {
-    if (recv_len < 5) {
+    if (recv_len < MODBUS_RTU_DATA_MIN_LENGTH) {
       return kModbusDataError;
     }
     // Crc校验
     uint16_t crc0 =
         (recv_data[recv_len - 2]) | ((uint16_t)recv_data[recv_len - 1] << 8);
-    uint16_t crc1 = Crc::crc16((unsigned char*)recv_data, recv_len - 2);
+    uint16_t crc1 = Crc::crc16((unsigned char*)recv_data, recv_len - MODBUS_RTU_CRC_LENGTH);
 
     if (crc1 != crc0) {
       return kModbusDataError;
     }
     recv_len -= 2;
   } else if (modbus_type_ == kModbusTcp) {
-    if (recv_len < 6) {
+    if (recv_len < MODBUS_TCP_DATA_MIN_LENGTH) {
       return kModbusDataError;
     }
-    int tmp_len = recv_data[5];
-    if (tmp_len + 6 != recv_len) {
+
+    int tmp_len = recv_data[4];         //< modbus数据长度
+    tmp_len = tmp_len << 8;
+    tmp_len |=  recv_data[5];
+
+    if (tmp_len + MODBUS_RTU_CRC_LENGTH != recv_len) {
       return kModbusDataError;
     }
     // modbus tcp 前6个字节为头部
-    realPos = 6;
+    realPos = MODBUS_RTU_CRC_LENGTH;
     recv_len -= realPos;
     tcp_head_count = recv_data[0];
     tcp_head_count = tcp_head_count << 8;
@@ -40,8 +51,8 @@ ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
     //    std::cout<<"tcp_head_count"<<tcp_head_count<<std::endl;
   }
 
-  uint16_t modbusID = recv_data[realPos];
-  uint16_t fun_code = recv_data[realPos + 1];
+  uint16_t modbusID = recv_data[realPos + MODBUS_ID_POS];
+  uint16_t fun_code = recv_data[realPos + MODBUS_FUNCODE_POS];
   uint16_t addr =
       ((uint16_t)recv_data[realPos + 2] << 8) | recv_data[realPos + 3];
   uint16_t data[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
@@ -95,24 +106,37 @@ ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
       ret = kModbusExceptionIllegalFunction;
       break;
   }
-
+  bool is_custom = false;
   if (ret == kModbusExceptionNone) {
     // 根据功能码，获取地址数据 存储到valueData中
     ret = dataAnalyze(fun_code, addr, len, data, value_data);
   }
+  else if(ret == kModbusExceptionIllegalFunction){      //< 自定义功能码解析
+      fun_code = recv_data[realPos + 1];
+      ret = this->slaveReadCustomHandle(fun_code,&(recv_data[realPos + 2]),recv_len-2,value_data,send_len);
+      if(ret != kModbusExceptionIllegalFunction){
+          is_custom = true;
+      }
+  }
 
-  if (ret == kModbusExceptionNone) {
-    // 将value_data拼接为返回帧
-    dataReply(fun_code, addr, len, data, value_data, send_len);
-    //    PRINT_HEX("hhssshh",value_data,*send_len);
-    memcpy(send_data, value_data, *send_len);
+  if (ret == kModbusExceptionNone ) {
+      if(!is_custom){
+          // 将value_data拼接为返回帧
+          dataReply(fun_code, addr, len, data, value_data, send_len);
+          memcpy(send_data, value_data, *send_len);
+      }
+      else{
+          send_data[0] = (uint8_t)modbus_id_;
+          send_data[1] = (uint8_t)fun_code;
+          memcpy(send_data+2, value_data, *send_len);
+      }
   } else {
     // 拼接错误帧
     errorReply(fun_code, ret, send_data);
     *send_len = 3;
   }
 
-  //  PRINT_HEX("hhhh",send_data,*send_len);
+  // 拼接帧头和帧尾
   *send_len = addHeaderAndTailMessage(send_data, *send_len);
 
   if (modbus_type_ == kModbusTcp) {
@@ -161,7 +185,21 @@ ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadDiscreteInputHandle(
 // 读输入寄存器
 ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadInputRegsHandle(int addr,
                                                                    int* value) {
-  return kModbusExceptionIllegalDataAddress;
+    return kModbusExceptionIllegalDataAddress;
+}
+
+///
+/// \brief ModbusSlave::slaveReadCustomHandle
+/// \param funcode
+/// \param recv_data
+/// \param recv_len
+/// \param send_data
+/// \param send_len
+/// \return
+///
+Modbus::ModbusErrorCode ModbusSlave::slaveReadCustomHandle(uint8_t funcode,const uint8_t *recv_data, int recv_len, uint8_t *send_data, int *send_len)
+{
+    return kModbusExceptionIllegalFunction;
 }
 
 // Modbus 数据处理函数
