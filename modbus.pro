@@ -18,6 +18,7 @@ VERSION = 1.0.0
 #DEFINES += HW_LINUX_X86         #X86 Linux
 
 # 判断硬件平台
+unix:{
 contains(QT_ARCH, arm64){
     DEFINES += HW_ARM_RZG2L
     message("arm linux 64")
@@ -33,6 +34,12 @@ contains(QT_ARCH, arm){
     suffix = lib_x86_linux
 }
 }
+}
+win32:{
+    DEFINES += HW_WIN_X86
+    suffix = lib_x86_win
+}
+
 
 GIT_BRANCH   = $$system(git rev-parse --abbrev-ref HEAD)
 GIT_HASH     = $$system(git show --oneline --format=\"%ci-%cn\" -s HEAD)
