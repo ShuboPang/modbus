@@ -2,14 +2,19 @@
 
 ModbusMaster::ModbusMaster(ModbusType type) { modbus_type_ = type; }
 
+Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(unsigned char *recv_data, int recv_len, int start_addr, ModbusErrorCode *err_code)
+{
+    return kModbusSuccess;
+}
+
 ///
-/// \brief ModbusMaster::hostReadCoils            主站侧读输入线圈 01
+/// \brief ModbusMaster::masterReadCoils            主站侧读输入线圈 01
 /// \param start_addr
 /// \param read_len
 /// \param send_buff
 /// \return
 ///
-int ModbusMaster::hostReadCoils(int slave_id, int start_addr, int read_len,
+int ModbusMaster::masterReadCoils(int slave_id, int start_addr, int read_len,
                                 unsigned char* send_buff) {
   int i = 0;
   send_buff[i++] = slave_id;
@@ -23,13 +28,13 @@ int ModbusMaster::hostReadCoils(int slave_id, int start_addr, int read_len,
 }
 
 ///
-/// \brief ModbusMaster::hostReadDiscreteInputs   主站侧读离散输入 02
+/// \brief ModbusMaster::masterReadDiscreteInputs   主站侧读离散输入 02
 /// \param start_addr
 /// \param read_len
 /// \param send_buff
 /// \return
 ///
-int ModbusMaster::hostReadDiscreteInputs(int slave_id, int start_addr,
+int ModbusMaster::masterReadDiscreteInputs(int slave_id, int start_addr,
                                          int read_len,
                                          unsigned char* send_buff) {
   int i = 0;
@@ -44,13 +49,13 @@ int ModbusMaster::hostReadDiscreteInputs(int slave_id, int start_addr,
 }
 
 ///
-/// \brief ModbusMaster::hostReadHoldRegs     主站侧读保持寄存器  03
+/// \brief ModbusMaster::masterReadHoldRegs     主站侧读保持寄存器  03
 /// \param start_addr
 /// \param read_len
 /// \param send_buff
 /// \return
 ///
-int ModbusMaster::hostReadHoldRegs(int slave_id, int start_addr, int read_len,
+int ModbusMaster::masterReadHoldRegs(int slave_id, int start_addr, int read_len,
                                    unsigned char* send_buff) {
   int i = 0;
   send_buff[i++] = slave_id;
@@ -64,13 +69,13 @@ int ModbusMaster::hostReadHoldRegs(int slave_id, int start_addr, int read_len,
 }
 
 ///
-/// \brief ModbusMaster::hostReadInputRegisters            主站侧读输入寄存器 04
+/// \brief ModbusMaster::masterReadInputRegisters            主站侧读输入寄存器 04
 /// \param start_addr
 /// \param read_len
 /// \param send_buff
 /// \return
 ///
-int ModbusMaster::hostReadInputRegisters(int slave_id, int start_addr,
+int ModbusMaster::masterReadInputRegisters(int slave_id, int start_addr,
                                          int read_len,
                                          unsigned char* send_buff) {
   int i = 0;
@@ -85,12 +90,12 @@ int ModbusMaster::hostReadInputRegisters(int slave_id, int start_addr,
 }
 
 ///
-/// \brief ModbusMaster::hostWriteSingleCoil      主站侧写单个线圈 05
+/// \brief ModbusMaster::masterWriteSingleCoil      主站侧写单个线圈 05
 /// \param start_addr
 /// \param value
 /// \return
 ///
-int ModbusMaster::hostWriteSingleCoil(int modbus_id, int start_addr, int value,
+int ModbusMaster::masterWriteSingleCoil(int modbus_id, int start_addr, int value,
                                       unsigned char* send_buff) {
   int i = 0;
   send_buff[i++] = modbus_id;
@@ -104,12 +109,12 @@ int ModbusMaster::hostWriteSingleCoil(int modbus_id, int start_addr, int value,
 }
 
 ///
-/// \brief ModbusMaster::hostWriteSingleRegister  主站侧写单个寄存器 06
+/// \brief ModbusMaster::masterWriteSingleRegister  主站侧写单个寄存器 06
 /// \param start_addr
 /// \param value
 /// \return
 ///
-int ModbusMaster::hostWriteSingleRegister(int slave_id, int start_addr,
+int ModbusMaster::masterWriteSingleRegister(int slave_id, int start_addr,
                                           int value, unsigned char* send_buff) {
   int i = 0;
   send_buff[i++] = slave_id;
@@ -123,14 +128,14 @@ int ModbusMaster::hostWriteSingleRegister(int slave_id, int start_addr,
 }
 
 ///
-/// \brief ModbusMaster::hostWriteCoils   主机侧写多个线圈  0f
+/// \brief ModbusMaster::masterWriteCoils   主机侧写多个线圈  0f
 /// \param start_addr
 /// \param len
 /// \param value_data
 /// \param send_buff
 /// \return
 ///
-int ModbusMaster::hostWriteCoils(int slave_id, int start_addr, int len,
+int ModbusMaster::masterWriteCoils(int slave_id, int start_addr, int len,
                                  unsigned char* value_data,
                                  unsigned char* send_buff) {
   int i = 0;
@@ -149,14 +154,14 @@ int ModbusMaster::hostWriteCoils(int slave_id, int start_addr, int len,
 }
 
 ///
-/// \brief ModbusMaster::hostWriteRegisters       主站侧写多个寄存器 10
+/// \brief ModbusMaster::masterWriteRegisters       主站侧写多个寄存器 10
 /// \param start_addr
 /// \param len
 /// \param value_data
 /// \param send_buff
 /// \return
 ///
-int ModbusMaster::hostWriteRegisters(int slave_id, int start_addr, int len,
+int ModbusMaster::masterWriteRegisters(int slave_id, int start_addr, int len,
                                      unsigned char* value_data,
                                      unsigned char* send_buff) {
   int i = 0;
@@ -172,4 +177,24 @@ int ModbusMaster::hostWriteRegisters(int slave_id, int start_addr, int len,
     send_buff[i++] = (value_data[j]) & 0xff;
   }
   return addHeaderAndTailMessage(send_buff, i);
+}
+
+void ModbusMaster::masterCoilsUpdate(int slave_id, int addr, int16_t value)
+{
+
+}
+
+void ModbusMaster::masterHoldRegUpdate(int slave_id, int addr, int16_t value)
+{
+
+}
+
+void ModbusMaster::masterDiscreteInputUpdate(int slave_id, int addr, int16_t value)
+{
+
+}
+
+void ModbusMaster::masterInputRegistersUpdate(int slave_id, int addr, int16_t value)
+{
+
 }
