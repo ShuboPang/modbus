@@ -33,7 +33,7 @@ function buildstaticlibTI(){
     project_path=.
     source ${SDK_path}/linux-devkit/environment-setup && 
     cd ${project_path}  && rm ${project_path}/output/* -rf  && 
-    ${SDK_path}/linux-devkit/sysroots/x86_64-arago-linux/usr/bin/qt5/qmake ${project_path}/modbus.pro CONFIG += staticlib -spec linux-oe-g++ && /usr/bin/make qmake_all && make -j8 && cd ${project_path} && 
+    ${SDK_path}/linux-devkit/sysroots/x86_64-arago-linux/usr/bin/qt5/qmake ${project_path}/modbus.pro CONFIG+=staticlib -spec linux-oe-g++ && /usr/bin/make qmake_all && make -j8 && cd ${project_path} && 
     output_path=${project_path}/output/ && 
     cp ${output_path}/* ${jenkins_output_path} -rf
 }

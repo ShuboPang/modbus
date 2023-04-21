@@ -28,7 +28,7 @@ function buildstaticlibRZG2L(){
     source ${SDK_path}/3.1.5/environment-setup-aarch64-poky-linux
     cd ${project_path} && rm ${project_path}/output/* -rf &&
     rm Makefile -rf &&
-    ${SDK_path}/3.1.5/sysroots/x86_64-pokysdk-linux/usr/bin/qt5/qmake  ${project_path}/modbus.pro CONFIG += staticlib -spec linux-oe-g++ && 
+    ${SDK_path}/3.1.5/sysroots/x86_64-pokysdk-linux/usr/bin/qt5/qmake  ${project_path}/modbus.pro CONFIG+=staticlib -spec linux-oe-g++ && 
     /usr/bin/make clean -j8 && 
     /usr/bin/make qmake_all &&
     make -j8  && 
