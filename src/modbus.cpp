@@ -12,31 +12,31 @@ void printByteToHex(const char* note, const unsigned char* source,
 /// \param sourceLen     字节长度
 ///
 void ByteToHexStr(const unsigned char* source, char* dest, int source_len) {
-  uint16_t i;
-  unsigned char highByte, lowByte;
+    uint16_t i;
+    unsigned char highByte, lowByte;
 
-  for (i = 0; i < source_len; i++) {
-    highByte = source[i] >> 4;
-    lowByte = source[i] & 0x0f;
+    for (i = 0; i < source_len; i++) {
+        highByte = source[i] >> 4;
+        lowByte = source[i] & 0x0f;
 
-    highByte += 0x30;
+        highByte += 0x30;
 
-    if (highByte > 0x39) {
-      dest[i * 3] = highByte + 0x07;
-    } else {
-      dest[i * 3] = highByte;
+        if (highByte > 0x39) {
+            dest[i * 3] = highByte + 0x07;
+        } else {
+            dest[i * 3] = highByte;
+        }
+
+        lowByte += 0x30;
+        if (lowByte > 0x39) {
+            dest[i * 3 + 1] = lowByte + 0x07;
+        } else {
+            dest[i * 3 + 1] = lowByte;
+        }
+
+        dest[i * 3 + 2] = ' ';
     }
-
-    lowByte += 0x30;
-    if (lowByte > 0x39) {
-      dest[i * 3 + 1] = lowByte + 0x07;
-    } else {
-      dest[i * 3 + 1] = lowByte;
-    }
-
-    dest[i * 3 + 2] = ' ';
-  }
-  return;
+    return;
 }
 
 ///
@@ -46,28 +46,28 @@ void ByteToHexStr(const unsigned char* source, char* dest, int source_len) {
 /// \param sourceLen
 ///
 void HexStrToByte(const char* source, unsigned char* dest, int source_len) {
-  uint16_t i;
-  unsigned char highByte, lowByte;
+    uint16_t i;
+    unsigned char highByte, lowByte;
 
-  for (i = 0; i < source_len; i += 2) {
-    highByte = toupper(source[i]);
-    lowByte = toupper(source[i + 1]);
+    for (i = 0; i < source_len; i += 2) {
+        highByte = toupper(source[i]);
+        lowByte = toupper(source[i + 1]);
 
-    if (highByte > 0x39) {
-      highByte -= 0x37;
-    } else {
-      highByte -= 0x30;
+        if (highByte > 0x39) {
+            highByte -= 0x37;
+        } else {
+            highByte -= 0x30;
+        }
+
+        if (lowByte > 0x39) {
+            lowByte -= 0x37;
+        } else {
+            lowByte -= 0x30;
+        }
+
+        dest[i / 2] = (highByte << 4) | lowByte;
     }
-
-    if (lowByte > 0x39) {
-      lowByte -= 0x37;
-    } else {
-      lowByte -= 0x30;
-    }
-
-    dest[i / 2] = (highByte << 4) | lowByte;
-  }
-  return;
+    return;
 }
 
 ///
@@ -82,33 +82,36 @@ void HexStrToByte(const char* source, unsigned char* dest, int source_len) {
 void printByteToHex(const char* note, const unsigned char* source,
                     int source_len, const char* file, const char* function,
                     int line) {
-  char* hex_str = new char[source_len * 3 + 1];
-  ByteToHexStr(source, hex_str, source_len);
-  std::cout << file << ":" << function << "(line:" << line << "):      " << note
-            << "  HEX(" << source_len << "):" << hex_str << std::endl;
-  delete[] hex_str;
+    char* hex_str = new char[source_len * 3 + 1];
+    ByteToHexStr(source, hex_str, source_len);
+    std::cout << file << ":" << function << "(line:" << line << "):      " << note
+              << "  HEX(" << source_len << "):" << hex_str << std::endl;
+    delete[] hex_str;
 }
 
 Modbus::Modbus() { modbus_type_ = kModbusRtu; }
 
-Modbus::Modbus(Modbus::ModbusType type) { modbus_type_ = type; }
+Modbus::Modbus(Modbus::ModbusType type) { modbus_type_ = type; serial_number = 0;}
 
 unsigned int Modbus::addHeaderAndTailMessage(unsigned char* ptr,
                                              unsigned char len) {
-  if (modbus_type_ == kModbusTcp) {
-    return addTcpHeader(ptr, len);
-  } else if (modbus_type_ == kModbusRtu) {
-    return Crc::addCrc16(ptr, len);
-  }
+    if (modbus_type_ == kModbusTcp) {
+        return addTcpHeader(ptr, len);
+    } else if (modbus_type_ == kModbusRtu) {
+        return Crc::addCrc16(ptr, len);
+    }
 }
 
-unsigned int Modbus::addTcpHeader(unsigned char* ptr, unsigned char len) {
-  unsigned char tmp[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
-  memcpy(tmp + 6, ptr, len);
-  memset(ptr, 0, len + 6);
-  memcpy(ptr, tmp, len + 6);
-  ptr[1] = 1;
-  ptr[5] = len;
-  //  ptr[6] = len & 0xff;
-  return len + 6;
+unsigned int Modbus::addTcpHeader(unsigned char* ptr, uint16_t len) {
+    unsigned char tmp[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
+    memcpy(tmp + 6, ptr, len);
+    memset(ptr, 0, len + 6);
+    memcpy(ptr, tmp, len + 6);
+
+    ptr[0] = (serial_number>>8)&0xff;
+    ptr[1] = serial_number&0xff;
+
+    ptr[4] = (len >> 8)&0xff;
+    ptr[5] = len&0xff;
+    return len + 6;
 }
