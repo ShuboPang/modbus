@@ -9,6 +9,7 @@ int32_t ModbusMasterTest::SendData(uint8_t *data, int32_t len)
 {
     memset(send_buff,0,sizeof (send_buff));
     memcpy(send_buff,data,len);
+
     return 0;
 }
 

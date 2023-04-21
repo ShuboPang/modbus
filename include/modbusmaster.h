@@ -46,7 +46,7 @@ public:
     /// \param read_len
     /// \return 发送数据长度
     ///
-    int masterReadInputRegisters(int modbus_id, int start_addr, int read_len);
+    int masterReadInputRegisters(int slave_id, int start_addr, int read_len);
 
     ///
     /// \brief ModbusBase::masterWriteSingleCoil      主站侧写单个线圈 05

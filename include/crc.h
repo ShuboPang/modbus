@@ -10,7 +10,7 @@ class Crc {
   ///
   /// \brief crc16    计算Crc16
   /// \param source   数据
-  /// \param len      数据长度 长度不能超过256
+  /// \param len      数据长度
   /// \return         crc
   ///
   static uint16_t crc16(const uint8_t* source, uint16_t len);
