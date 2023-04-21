@@ -89,9 +89,9 @@ void printByteToHex(const char* note, const unsigned char* source,
     delete[] hex_str;
 }
 
-Modbus::Modbus() { modbus_type_ = kModbusRtu; }
+Modbus::Modbus() { modbus_type_ = kModbusRtu; serial_number = 1;}
 
-Modbus::Modbus(Modbus::ModbusType type) { modbus_type_ = type; serial_number = 0;}
+Modbus::Modbus(Modbus::ModbusType type) { modbus_type_ = type; serial_number = 1;}
 
 unsigned int Modbus::addHeaderAndTailMessage(unsigned char* ptr,
                                              unsigned char len) {
