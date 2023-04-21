@@ -11,6 +11,7 @@ INCLUDEPATH += ..
 
 HEADERS += \
         ../src/crc.h \
+        modbusmastertest.h \
         modbusslavetest.h \
         tst_modbustest.h
 
@@ -20,4 +21,5 @@ SOURCES += \
         ../src/modbusmaster.cpp \
         ../src/modbusslave.cpp \
         main.cpp \
+        modbusmastertest.cpp \
         modbusslavetest.cpp

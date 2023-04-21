@@ -18,19 +18,19 @@ public:
      ModbusErrorCode slaveReadHoldRegHandle(uint16_t addr, uint16_t* value) override;
 
     // 写保持寄存器
-     ModbusErrorCode slaveWriteHoldRegHandle(uint16_t addr, int value) override;
+     ModbusErrorCode slaveWriteHoldRegHandle(uint16_t addr, uint16_t value) override;
 
     // 读线圈
-     ModbusErrorCode slaveReadCoilHandle(uint16_t addr, int* value) override;
+     ModbusErrorCode slaveReadCoilHandle(uint16_t addr, uint16_t* value) override;
 
     // 读线圈
-     ModbusErrorCode slaveWriteCoilHandle(uint16_t addr, int value) override;
+     ModbusErrorCode slaveWriteCoilHandle(uint16_t addr, uint16_t value) override;
 
     // 读离散输入
-     ModbusErrorCode slaveReadDiscreteInputHandle(uint16_t addr, int* value) override;
+     ModbusErrorCode slaveReadDiscreteInputHandle(uint16_t addr, uint16_t* value) override;
 
     // 读输入寄存器
-     ModbusErrorCode slaveReadInputRegsHandle(uint16_t addr, int* value) override;
+     ModbusErrorCode slaveReadInputRegsHandle(uint16_t addr, uint16_t* value) override;
 
  public:
      REGISTER_MAP hold_regs;

@@ -30,19 +30,19 @@ public:
     virtual ModbusErrorCode slaveReadHoldRegHandle(uint16_t addr, uint16_t* value);
 
     // 写保持寄存器
-    virtual ModbusErrorCode slaveWriteHoldRegHandle(uint16_t addr, int value);
+    virtual ModbusErrorCode slaveWriteHoldRegHandle(uint16_t addr, uint16_t value);
 
     // 读线圈
-    virtual ModbusErrorCode slaveReadCoilHandle(uint16_t addr, int* value);
+    virtual ModbusErrorCode slaveReadCoilHandle(uint16_t addr, uint16_t* value);
 
     // 读线圈
-    virtual ModbusErrorCode slaveWriteCoilHandle(uint16_t addr, int value);
+    virtual ModbusErrorCode slaveWriteCoilHandle(uint16_t addr, uint16_t value);
 
     // 读离散输入
-    virtual ModbusErrorCode slaveReadDiscreteInputHandle(uint16_t addr, int* value);
+    virtual ModbusErrorCode slaveReadDiscreteInputHandle(uint16_t addr, uint16_t* value);
 
     // 读输入寄存器
-    virtual ModbusErrorCode slaveReadInputRegsHandle(uint16_t addr, int* value);
+    virtual ModbusErrorCode slaveReadInputRegsHandle(uint16_t addr, uint16_t* value);
 
     ///
     /// \brief slaveReadCustomHandle          自定义操作

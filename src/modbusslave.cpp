@@ -150,31 +150,31 @@ ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadHoldRegHandle(
 
 // 写保持寄存器
 ModbusSlave::ModbusErrorCode ModbusSlave::slaveWriteHoldRegHandle(uint16_t addr,
-                                                                  int value) {
+                                                                  uint16_t value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
 // 读线圈
 ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadCoilHandle(uint16_t addr,
-                                                              int* value) {
+                                                              uint16_t* value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
 // 写线圈
 ModbusSlave::ModbusErrorCode ModbusSlave::slaveWriteCoilHandle(uint16_t addr,
-                                                               int value) {
+                                                               uint16_t value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
 // 读离散输入
 ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadDiscreteInputHandle(
-    uint16_t addr, int* value) {
+    uint16_t addr, uint16_t* value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
 // 读输入寄存器
 ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadInputRegsHandle(uint16_t addr,
-                                                                   int* value) {
+                                                                   uint16_t* value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
@@ -204,7 +204,7 @@ ModbusSlave::ModbusErrorCode ModbusSlave::dataAnalyze(
     int funCode, int addr, int len, uint16_t* recv_data,
     unsigned char* send_data) {
     ModbusErrorCode ret = kModbusExceptionNone;
-    int tmpValue = 0;
+    uint16_t tmpValue = 0;
     switch (funCode) {
     case kReadCoils:  // 0x01
         for (int i = 0; i < len; i++) {
@@ -241,7 +241,7 @@ ModbusSlave::ModbusErrorCode ModbusSlave::dataAnalyze(
     } break;
     case kReadInputRegisters:  // 0x04
         for (uint32_t i = 0; i < len; i++) {
-            int data = 0;
+            uint16_t data = 0;
             ret = slaveReadInputRegsHandle(addr + i, &data);
             if (ret != kModbusExceptionNone) {
                 break;

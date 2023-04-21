@@ -72,12 +72,13 @@ public:
         kWriteMultipleRegisters = 0X10,  //< 写多个寄存器
     };
 
-    enum ModbusReplyStatus    // 数据回复状态
-    { kModbusSuccess = 0,     // 数据校验成功 正常帧和错误帧
-      kModbusIdError = -1,    // 主机id错误
-      kModbusDataError = -2,  // 数据错误，不是modbus数据帧格式
-      kModbusNotMatch = -3,   //< 数据不匹配 从站返回的数据与主站不对应
-      kModbusLengthError = -4,//< 从站回复的数据长度不是2的整数倍
+    //< 数据回复状态
+    enum ModbusReplyStatus{
+        kModbusSuccess = 0,     // 数据校验成功 正常帧和错误帧
+        kModbusIdError = -1,    // 主机id错误
+        kModbusDataError = -2,  // 数据错误，不是modbus数据帧格式
+        kModbusNotMatch = -3,   //< 数据不匹配 从站返回的数据与主站不对应
+        kModbusLengthError = -4,//< 从站回复的数据长度不是2的整数倍
     };
 
     explicit Modbus(ModbusType type);

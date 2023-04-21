@@ -19,28 +19,28 @@ Modbus::ModbusErrorCode ModbusSlaveTest::slaveReadHoldRegHandle(uint16_t addr, u
     return kModbusExceptionIllegalDataAddress;
 }
 
-Modbus::ModbusErrorCode ModbusSlaveTest::slaveWriteHoldRegHandle(uint16_t addr, int value)
+Modbus::ModbusErrorCode ModbusSlaveTest::slaveWriteHoldRegHandle(uint16_t addr, uint16_t value)
 {
     hold_regs[addr] = value;
     return kModbusExceptionNone;
 }
 
-Modbus::ModbusErrorCode ModbusSlaveTest::slaveReadCoilHandle(uint16_t addr, int *value)
+Modbus::ModbusErrorCode ModbusSlaveTest::slaveReadCoilHandle(uint16_t addr, uint16_t *value)
 {
     return kModbusExceptionNone;
 }
 
-Modbus::ModbusErrorCode ModbusSlaveTest::slaveWriteCoilHandle(uint16_t addr, int value)
+Modbus::ModbusErrorCode ModbusSlaveTest::slaveWriteCoilHandle(uint16_t addr, uint16_t value)
 {
     return kModbusExceptionNone;
 }
 
-Modbus::ModbusErrorCode ModbusSlaveTest::slaveReadDiscreteInputHandle(uint16_t addr, int *value)
+Modbus::ModbusErrorCode ModbusSlaveTest::slaveReadDiscreteInputHandle(uint16_t addr, uint16_t *value)
 {
     return kModbusExceptionNone;
 }
 
-Modbus::ModbusErrorCode ModbusSlaveTest::slaveReadInputRegsHandle(uint16_t addr, int *value)
+Modbus::ModbusErrorCode ModbusSlaveTest::slaveReadInputRegsHandle(uint16_t addr, uint16_t *value)
 {
     return kModbusExceptionNone;
 }
