@@ -16,14 +16,7 @@ uint8_t recv_len = 0;
 uint8_t send_len = 0;
 
 
-uint8_t SetBuffData(uint8_t* data,std::initializer_list<uint8_t> li){
-    uint8_t i = 0;
-    for(auto beg=li.begin(); beg!=li.end(); ++beg){
-        data[i] =  *beg;
-        ++i;
-    }
-    return i;
-}
+
 
 TEST(ModbusTest, ModbusTest)
 {
@@ -36,7 +29,7 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_CrcError)
     ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusRtu);
 
     //< 错误的校验和测试
-    recv_len = SetBuffData(recv_buff,{0x01,0x03,0x00,0x01,0x00,0x01,0x00,0x00});
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x01,0x03,0x00,0x01,0x00,0x01,0x00,0x00});
     test->SetModbusID(1);
     ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
     EXPECT_EQ(status, ModbusSlave::kModbusDataError);
@@ -48,7 +41,7 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_CrcOk)
 {
     ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusRtu);
 
-    recv_len = SetBuffData(recv_buff,{0x01,0x03,0x00,0x01,0x00,0x01,0xca,0xd5});
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x01,0x03,0x00,0x01,0x00,0x01,0xca,0xd5});
     test->SetModbusID(1);
     ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
     EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
@@ -61,7 +54,7 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_ReadHoldRegs)
 {
     ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusRtu);
 
-    recv_len = SetBuffData(recv_buff,{0x01,0x03,0x00,0x01,0x00,0x01,0xca,0xd5});
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x01,0x03,0x00,0x01,0x00,0x01,0xca,0xd5});
     test->SetModbusID(1);
     ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
     EXPECT_EQ(status, ModbusSlave::kModbusSuccess);

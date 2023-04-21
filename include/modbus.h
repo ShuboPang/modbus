@@ -84,6 +84,17 @@ public:
 
 public:
     ///
+    /// \brief SetBuffData          设置buff数据
+    /// \param data
+    /// \param li
+    /// \return
+    ///
+    /// eg. recv_len = SetBuffData(recv_buff,{0x01,0x03,0x00,0x01,0x00,0x01,0x00,0x00});
+    ///
+    static uint8_t SetBuffData(uint8_t* data,std::initializer_list<uint8_t> li);
+
+public:
+    ///
     /// \brief addTcpHeader     为modbus数据帧添加modbus tcp头部
     /// \param ptr
     /// \param len

@@ -1,5 +1,5 @@
 #include "modbusmaster.h"
-#include "src/crc.h"
+#include "crc.h"
 
 ModbusMaster::ModbusMaster(ModbusType type) { modbus_type_ = type; }
 

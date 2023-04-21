@@ -91,7 +91,7 @@ SOURCES += \
 HEADERS += \
         include/modbus.h \
     include/modbusslave.h \
-    src/crc.h \
+    include/crc.h \
     include/modbusmaster.h
 
 INCLUDEPATH += include/

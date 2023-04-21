@@ -93,6 +93,15 @@ Modbus::Modbus() { modbus_type_ = kModbusRtu; serial_number = 1;}
 
 Modbus::Modbus(Modbus::ModbusType type) { modbus_type_ = type; serial_number = 1;}
 
+uint8_t Modbus::SetBuffData(uint8_t* data,std::initializer_list<uint8_t> li){
+    uint8_t i = 0;
+    for(auto beg=li.begin(); beg!=li.end(); ++beg){
+        data[i] =  *beg;
+        ++i;
+    }
+    return i;
+}
+
 unsigned int Modbus::addHeaderAndTailMessage(unsigned char* ptr,
                                              unsigned char len) {
     if (modbus_type_ == kModbusTcp) {
