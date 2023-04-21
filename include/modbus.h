@@ -22,6 +22,10 @@
 #define PRINT_HEX(note, source, len) \
   printByteToHex(note, source, len, __FILE__, __FUNCTION__, __LINE__)
 
+void printByteToHex(const char* note, const unsigned char* source,
+                    int source_len, const char* file, const char* function,
+                    int line);
+
 class Modbus {
 public:
     Modbus();

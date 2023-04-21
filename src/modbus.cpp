@@ -1,9 +1,7 @@
 #include "modbus.h"
 #include "crc.h"
 
-void printByteToHex(const char* note, const unsigned char* source,
-                    int source_len, const char* file, const char* function,
-                    int line);
+
 
 ///
 /// \brief ByteToHexStr  字节流转换为十六进制字符串，每个字节直接用空格分割
@@ -36,6 +34,7 @@ void ByteToHexStr(const unsigned char* source, char* dest, int source_len) {
 
         dest[i * 3 + 2] = ' ';
     }
+    dest[source_len*3]=0;
     return;
 }
 
@@ -82,7 +81,8 @@ void HexStrToByte(const char* source, unsigned char* dest, int source_len) {
 void printByteToHex(const char* note, const unsigned char* source,
                     int source_len, const char* file, const char* function,
                     int line) {
-    char* hex_str = new char[source_len * 3 + 1];
+    char* hex_str = new char[source_len * 3+1];
+    memset(hex_str,0,source_len * 3);
     ByteToHexStr(source, hex_str, source_len);
     std::cout << file << ":" << function << "(line:" << line << "):      " << note
               << "  HEX(" << source_len << "):" << hex_str << std::endl;

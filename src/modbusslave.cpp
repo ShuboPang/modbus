@@ -6,8 +6,8 @@
 ModbusSlave::ModbusSlave(ModbusType type) { modbus_type_ = type; }
 
 ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
-    unsigned char* recv_data, int recv_len, unsigned char* send_data,
-    int* send_len) {
+    unsigned char* recv_data, uint8_t recv_len, unsigned char* send_data,
+    uint8_t* send_len) {
     int ret = kModbusExceptionNone;
     int realPos = 0;      //< TCP : 6  rtu:0
 
@@ -144,36 +144,36 @@ ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
 
 // 读保持寄存器
 ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadHoldRegHandle(
-    int addr, uint16_t* value) {
+    uint16_t addr, uint16_t* value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
 // 写保持寄存器
-ModbusSlave::ModbusErrorCode ModbusSlave::slaveWriteHoldRegHandle(int addr,
+ModbusSlave::ModbusErrorCode ModbusSlave::slaveWriteHoldRegHandle(uint16_t addr,
                                                                   int value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
 // 读线圈
-ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadCoilHandle(int addr,
+ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadCoilHandle(uint16_t addr,
                                                               int* value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
 // 写线圈
-ModbusSlave::ModbusErrorCode ModbusSlave::slaveWriteCoilHandle(int addr,
+ModbusSlave::ModbusErrorCode ModbusSlave::slaveWriteCoilHandle(uint16_t addr,
                                                                int value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
 // 读离散输入
 ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadDiscreteInputHandle(
-    int addr, int* value) {
+    uint16_t addr, int* value) {
     return kModbusExceptionIllegalDataAddress;
 }
 
 // 读输入寄存器
-ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadInputRegsHandle(int addr,
+ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadInputRegsHandle(uint16_t addr,
                                                                    int* value) {
     return kModbusExceptionIllegalDataAddress;
 }
@@ -187,7 +187,7 @@ ModbusSlave::ModbusErrorCode ModbusSlave::slaveReadInputRegsHandle(int addr,
 /// \param send_len
 /// \return
 ///
-Modbus::ModbusErrorCode ModbusSlave::slaveReadCustomHandle(uint8_t funcode,const uint8_t *recv_data, int recv_len, uint8_t *send_data, int *send_len)
+Modbus::ModbusErrorCode ModbusSlave::slaveReadCustomHandle(uint8_t funcode,const uint8_t *recv_data, int recv_len, uint8_t *send_data, uint8_t *send_len)
 {
     return kModbusExceptionIllegalFunction;
 }
@@ -281,7 +281,7 @@ ModbusSlave::ModbusErrorCode ModbusSlave::dataAnalyze(
 
 void ModbusSlave::dataReply(int fun_code, int addr, int len,
                             uint16_t* recv_data, unsigned char* send_buff,
-                            int* send_len) {
+                            uint8_t* send_len) {
     char buff[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
     buff[0] = (uint8_t)modbus_id_;
     buff[1] = (uint8_t)fun_code;

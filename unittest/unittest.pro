@@ -6,8 +6,18 @@ CONFIG -= app_bundle
 CONFIG += thread
 CONFIG -= qt
 
+INCLUDEPATH += ../include
+INCLUDEPATH += ..
+
 HEADERS += \
+        ../src/crc.h \
+        modbusslavetest.h \
         tst_modbustest.h
 
 SOURCES += \
-        main.cpp
+        ../src/crc.cpp \
+        ../src/modbus.cpp \
+        ../src/modbusmaster.cpp \
+        ../src/modbusslave.cpp \
+        main.cpp \
+        modbusslavetest.cpp

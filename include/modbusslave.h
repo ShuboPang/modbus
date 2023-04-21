@@ -22,27 +22,27 @@ public:
     /// \param send_len             从站回复数据
     /// \return     从站接收到的数据是否为modbus数据帧格式
     ///
-    ModbusReplyStatus slaveDataProcess(unsigned char* recv_data, int recv_len,
-                                       unsigned char* send_data, int* send_len);
+    ModbusReplyStatus slaveDataProcess(unsigned char* recv_data, uint8_t recv_len,
+                                       unsigned char* send_data, uint8_t* send_len);
 
     //// 从机收到主站数据后调用
     // 读保持寄存器
-    virtual ModbusErrorCode slaveReadHoldRegHandle(int addr, uint16_t* value);
+    virtual ModbusErrorCode slaveReadHoldRegHandle(uint16_t addr, uint16_t* value);
 
     // 写保持寄存器
-    virtual ModbusErrorCode slaveWriteHoldRegHandle(int addr, int value);
+    virtual ModbusErrorCode slaveWriteHoldRegHandle(uint16_t addr, int value);
 
     // 读线圈
-    virtual ModbusErrorCode slaveReadCoilHandle(int addr, int* value);
+    virtual ModbusErrorCode slaveReadCoilHandle(uint16_t addr, int* value);
 
     // 读线圈
-    virtual ModbusErrorCode slaveWriteCoilHandle(int addr, int value);
+    virtual ModbusErrorCode slaveWriteCoilHandle(uint16_t addr, int value);
 
     // 读离散输入
-    virtual ModbusErrorCode slaveReadDiscreteInputHandle(int addr, int* value);
+    virtual ModbusErrorCode slaveReadDiscreteInputHandle(uint16_t addr, int* value);
 
     // 读输入寄存器
-    virtual ModbusErrorCode slaveReadInputRegsHandle(int addr, int* value);
+    virtual ModbusErrorCode slaveReadInputRegsHandle(uint16_t addr, int* value);
 
     ///
     /// \brief slaveReadCustomHandle          自定义操作
@@ -53,7 +53,7 @@ public:
     /// \param send_len                       发送数据长度
     /// \return
     ///
-    virtual ModbusErrorCode slaveReadCustomHandle(uint8_t funcode, const uint8_t* recv_data,int recv_len,uint8_t* send_data,int* send_len);
+    virtual ModbusErrorCode slaveReadCustomHandle(uint8_t funcode, const uint8_t* recv_data,int recv_len,uint8_t* send_data,uint8_t* send_len);
 
 private:
     ///
@@ -78,7 +78,7 @@ private:
     /// \param sendLen
     ///
     void dataReply(int fun_code, int addr, int len, uint16_t* recv_data,
-                   unsigned char* send_buff, int* send_len);
+                   unsigned char* send_buff, uint8_t *send_len);
 
     ///
     /// \brief errorReply
