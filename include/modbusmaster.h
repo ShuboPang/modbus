@@ -88,10 +88,10 @@ public:
     virtual int32_t SendData(uint8_t * data,int32_t len);
 
 public:
-    virtual void masterCoilsUpdate(int slave_id, int addr,int16_t value);
-    virtual void masterHoldRegUpdate(int slave_id, int addr,int16_t value);
-    virtual void masterDiscreteInputUpdate(int slave_id, int addr,int16_t value);
-    virtual void masterInputRegistersUpdate(int slave_id, int addr,int16_t value);
+    virtual void masterCoilsUpdate(uint16_t slave_id, uint16_t addr,int16_t value);
+    virtual void masterHoldRegUpdate(uint16_t slave_id, uint16_t addr,int16_t value);
+    virtual void masterDiscreteInputUpdate(uint16_t slave_id, uint16_t addr,int16_t value);
+    virtual void masterInputRegistersUpdate(uint16_t slave_id, uint16_t addr,int16_t value);
 
 private:
     struct{

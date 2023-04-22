@@ -35,7 +35,6 @@ void ByteToHexStr(const uint8_t* source, char* dest, int source_len) {
         dest[i * 3 + 2] = ' ';
     }
     dest[source_len*3]=0;
-    return;
 }
 
 ///
@@ -109,6 +108,7 @@ unsigned int Modbus::addHeaderAndTailMessage(uint8_t* ptr,
     } else if (modbus_type_ == kModbusRtu) {
         return Crc::addCrc16(ptr, len);
     }
+    return 0;
 }
 
 unsigned int Modbus::addTcpHeader(uint8_t* ptr, uint16_t len) {

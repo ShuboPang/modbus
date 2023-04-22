@@ -331,22 +331,22 @@ int32_t ModbusMaster::SendData(uint8_t *data, int32_t len)
     return 0;
 }
 
-void ModbusMaster::masterCoilsUpdate(int slave_id, int addr, int16_t value)
+void ModbusMaster::masterCoilsUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }
 
-void ModbusMaster::masterHoldRegUpdate(int slave_id, int addr, int16_t value)
+void ModbusMaster::masterHoldRegUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }
 
-void ModbusMaster::masterDiscreteInputUpdate(int slave_id, int addr, int16_t value)
+void ModbusMaster::masterDiscreteInputUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }
 
-void ModbusMaster::masterInputRegistersUpdate(int slave_id, int addr, int16_t value)
+void ModbusMaster::masterInputRegistersUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }
