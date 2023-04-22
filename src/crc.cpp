@@ -52,8 +52,8 @@ Crc::Crc() {}
 
 uint16_t Crc::crc16(const uint8_t* source, uint16_t len) {
   unsigned int index;
-  unsigned char crch = 0xFF;  // 高CRC字节
-  unsigned char crcl = 0xFF;  // 低CRC字节
+  uint8_t crch = 0xFF;  // 高CRC字节
+  uint8_t crcl = 0xFF;  // 低CRC字节
 
   if (len > (sizeof(code_tabH) / sizeof(uint8_t))) {
     return 0;

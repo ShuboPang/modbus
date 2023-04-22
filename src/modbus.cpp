@@ -9,9 +9,9 @@
 /// \param dest          HEX数组
 /// \param sourceLen     字节长度
 ///
-void ByteToHexStr(const unsigned char* source, char* dest, int source_len) {
+void ByteToHexStr(const uint8_t* source, char* dest, int source_len) {
     uint16_t i;
-    unsigned char highByte, lowByte;
+    uint8_t highByte, lowByte;
 
     for (i = 0; i < source_len; i++) {
         highByte = source[i] >> 4;
@@ -44,9 +44,9 @@ void ByteToHexStr(const unsigned char* source, char* dest, int source_len) {
 /// \param dest
 /// \param sourceLen
 ///
-void HexStrToByte(const char* source, unsigned char* dest, int source_len) {
+void HexStrToByte(const char* source, uint8_t* dest, int source_len) {
     uint16_t i;
-    unsigned char highByte, lowByte;
+    uint8_t highByte, lowByte;
 
     for (i = 0; i < source_len; i += 2) {
         highByte = toupper(source[i]);
@@ -78,7 +78,7 @@ void HexStrToByte(const char* source, unsigned char* dest, int source_len) {
 /// \param function
 /// \param line
 ///
-void printByteToHex(const char* note, const unsigned char* source,
+void printByteToHex(const char* note, const uint8_t* source,
                     int source_len, const char* file, const char* function,
                     int line) {
     char* hex_str = new char[source_len * 3+1];
@@ -102,8 +102,8 @@ uint8_t Modbus::SetBuffData(uint8_t* data,std::initializer_list<uint8_t> li){
     return i;
 }
 
-unsigned int Modbus::addHeaderAndTailMessage(unsigned char* ptr,
-                                             unsigned char len) {
+unsigned int Modbus::addHeaderAndTailMessage(uint8_t* ptr,
+                                             uint8_t len) {
     if (modbus_type_ == kModbusTcp) {
         return addTcpHeader(ptr, len);
     } else if (modbus_type_ == kModbusRtu) {
@@ -111,8 +111,8 @@ unsigned int Modbus::addHeaderAndTailMessage(unsigned char* ptr,
     }
 }
 
-unsigned int Modbus::addTcpHeader(unsigned char* ptr, uint16_t len) {
-    unsigned char tmp[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
+unsigned int Modbus::addTcpHeader(uint8_t* ptr, uint16_t len) {
+    uint8_t tmp[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
     memcpy(tmp + 6, ptr, len);
     memset(ptr, 0, len + 6);
     memcpy(ptr, tmp, len + 6);

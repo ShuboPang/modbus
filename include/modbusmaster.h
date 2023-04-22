@@ -14,7 +14,7 @@ public:
     /// \param err_code             从站回复错误码
     /// \return         数据校验结果
     ///
-    ModbusReplyStatus masterDataProcess(unsigned char* recv_data, int recv_len,ModbusErrorCode* err_code);
+    ModbusReplyStatus masterDataProcess(uint8_t* recv_data, int recv_len,ModbusErrorCode* err_code);
 
     ///
     /// \brief ModbusBase::masterReadCoils            主站侧读输入线圈 01
@@ -72,7 +72,7 @@ public:
     /// \return   发送数据长度
     ///
     int masterWriteCoils(int slave_id, int start_addr, int len,
-                         unsigned char* value_data);
+                         uint8_t* value_data);
 
     ///
     /// \brief ModbusBase::masterWriteRegisters       主站侧写多个寄存器 10
@@ -82,7 +82,7 @@ public:
     /// \return  发送数据长度
     ///
     int masterWriteRegisters(int slave_id, int start_addr, int len,
-                             unsigned char* value_data);
+                             uint8_t* value_data);
 
 public:
     virtual int32_t SendData(uint8_t * data,int32_t len);

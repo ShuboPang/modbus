@@ -6,7 +6,7 @@
 ModbusSlave::ModbusSlave(ModbusType type) { modbus_type_ = type; }
 
 ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
-    unsigned char* recv_data, uint8_t recv_len, unsigned char* send_data,
+    uint8_t* recv_data, uint8_t recv_len, uint8_t* send_data,
     uint8_t* send_len) {
     int ret = kModbusExceptionNone;
     int realPos = 0;      //< TCP : 6  rtu:0
@@ -19,7 +19,7 @@ ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
         // Crc校验
         uint16_t crc0 =
             (recv_data[recv_len - 2]) | ((uint16_t)recv_data[recv_len - 1] << 8);
-        uint16_t crc1 = Crc::crc16((unsigned char*)recv_data, recv_len - MODBUS_RTU_CRC_LENGTH);
+        uint16_t crc1 = Crc::crc16((uint8_t*)recv_data, recv_len - MODBUS_RTU_CRC_LENGTH);
 
         if (crc1 != crc0) {
             return kModbusDataError;
@@ -51,7 +51,7 @@ ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
     uint16_t addr =
         ((uint16_t)recv_data[realPos + 2] << 8) | recv_data[realPos + 3];
     uint16_t data[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
-    unsigned char value_data[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
+    uint8_t value_data[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
     if (modbusID != modbus_id_ && modbusID != 0 && modbusID != 254) {
         send_data[0] = modbusID;
         return kModbusIdError;
@@ -202,7 +202,7 @@ Modbus::ModbusErrorCode ModbusSlave::slaveReadCustomHandle(uint8_t funcode,const
 //   错误码
 ModbusSlave::ModbusErrorCode ModbusSlave::dataAnalyze(
     int funCode, int addr, int len, uint16_t* recv_data,
-    unsigned char* send_data) {
+    uint8_t* send_data) {
     ModbusErrorCode ret = kModbusExceptionNone;
     uint16_t tmpValue = 0;
     switch (funCode) {
@@ -280,7 +280,7 @@ ModbusSlave::ModbusErrorCode ModbusSlave::dataAnalyze(
 }
 
 void ModbusSlave::dataReply(int fun_code, int addr, int len,
-                            uint16_t* recv_data, unsigned char* send_buff,
+                            uint16_t* recv_data, uint8_t* send_buff,
                             uint8_t* send_len) {
     char buff[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
     buff[0] = (uint8_t)modbus_id_;
@@ -328,7 +328,7 @@ void ModbusSlave::dataReply(int fun_code, int addr, int len,
 /// \param sendBuff
 ///
 void ModbusSlave::errorReply(int fun_code, int errCode,
-                             unsigned char* sendBuff) {
+                             uint8_t* sendBuff) {
     sendBuff[0] = modbus_id_;
     sendBuff[1] = fun_code;
     sendBuff[1] |= 1 << 7;
