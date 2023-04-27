@@ -141,6 +141,29 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_ID)
     delete test;
 }
 
+TEST(ModbusSlaveTcpUnitTest, ModbusSlaveUnitTest_ID)
+{
+    DataInit();
+    ModbusSlave::ModbusReplyStatus status;
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusTcp);
+    test->SetModbusID(1);
+
+    //< 接收到的ID 为0时不回复
+
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x00,0x03,0x00,0x00,0x00,0x06,0x00,0x03,0x00,0x01,0x00,0x01});
+    status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+    EXPECT_EQ(send_len, 0);
+
+    //< 接收到的ID 为254时 正常回复
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x00,0x03,0x00,0x00,0x00,0x06,0xfe,0x03,0x00,0x01,0x00,0x01});
+    status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+    EXPECT_EQ(send_buff[6], 1);
+
+    delete test;
+}
+
 ///
 /// \brief TEST     测试 03 功能码读寄存器
 ///
@@ -156,6 +179,26 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_ReadHoldRegs)
     EXPECT_EQ(send_buff[0],0x01);
     EXPECT_EQ(send_buff[1],0x83);
     EXPECT_EQ(send_buff[2],0x02);
+
+    delete test;
+}
+
+TEST(ModbusSlaveTcpUnitTest, ModbusSlaveUnitTest_ReadHoldRegs)
+{
+    DataInit();
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusTcp);
+
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x03,0x00,0x01,0x00,0x01});
+    test->SetModbusID(1);
+    ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+    EXPECT_EQ(send_buff[0],0x00);
+    EXPECT_EQ(send_buff[1],0x03);
+    EXPECT_EQ(send_buff[5],0x03);
+
+    EXPECT_EQ(send_buff[6],0x01);
+    EXPECT_EQ(send_buff[7],0x83);
+    EXPECT_EQ(send_buff[8],0x02);
 
     delete test;
 }
