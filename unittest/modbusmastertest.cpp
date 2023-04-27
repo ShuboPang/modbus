@@ -13,22 +13,22 @@ int32_t ModbusMasterTest::SendData(uint8_t *data, int32_t len)
     return 0;
 }
 
-void ModbusMasterTest::masterCoilsUpdate(int slave_id, int addr, int16_t value)
+void ModbusMasterTest::masterCoilsUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }
 
-void ModbusMasterTest::masterHoldRegUpdate(int slave_id, int addr, int16_t value)
+void ModbusMasterTest::masterHoldRegUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
     slave[slave_id][addr] = value;
 }
 
-void ModbusMasterTest::masterDiscreteInputUpdate(int slave_id, int addr, int16_t value)
+void ModbusMasterTest::masterDiscreteInputUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }
 
-void ModbusMasterTest::masterInputRegistersUpdate(int slave_id, int addr, int16_t value)
+void ModbusMasterTest::masterInputRegistersUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }

@@ -34,11 +34,12 @@ ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
         tmp_len = tmp_len << 8;
         tmp_len |=  recv_data[5];
 
-        if (tmp_len + MODBUS_RTU_CRC_LENGTH != recv_len) {
+        if (tmp_len + MODBUS_TCP_HEAD != recv_len) {
+            std::cout<<"tmp_len = "<<tmp_len<<"   recv_len= "<<recv_len<<std::endl;
             return kModbusDataError;
         }
         // modbus tcp 前6个字节为头部
-        realPos = MODBUS_RTU_CRC_LENGTH;
+        realPos = MODBUS_TCP_HEAD;
         recv_len -= realPos;
         uint16_t tcp_head_count = recv_data[0];
         tcp_head_count = tcp_head_count << 8;

@@ -52,6 +52,9 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_CrcError)
     delete test;
 }
 
+///
+/// \brief TEST   测试数据长度不够的情况
+///
 TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_Buff)
 {
     DataInit();
@@ -62,6 +65,34 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_Buff)
     test->SetModbusID(1);
     ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
     EXPECT_EQ(status, ModbusSlave::kModbusDataError);
+
+    delete test;
+}
+
+TEST(ModbusSlaveTcpUnitTest, ModbusSlaveUnitTest_Buff)
+{
+    DataInit();
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusTcp);
+
+    //< 错误的校验和测试
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x01,0x03,0x00});
+    test->SetModbusID(1);
+    ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusDataError);
+
+    delete test;
+}
+
+TEST(ModbusSlaveTcpUnitTest, ModbusSlaveUnitTest_BuffOk)
+{
+    DataInit();
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusTcp);
+
+    //< 错误的校验和测试
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x03,0x00,0x01,0x00,0x01});
+    test->SetModbusID(1);
+    ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
 
     delete test;
 }
