@@ -50,15 +50,10 @@ public:
         kModbusExceptionMax
     };
 
-        enum ModbusType {
-            kModbusAscii = 0,  //
-            kModbusRtu = 1,
-            kModbusTcp = 2,
-            };
-
-    enum ModbusMode {
-        kModbusHost,   // modbus主站
-        kModbusSlave,  // modbu从站
+    enum ModbusType {
+        kModbusAscii = 0,  //
+        kModbusRtu = 1,
+        kModbusTcp = 2,
     };
 
     enum ModbusFunctionCode {

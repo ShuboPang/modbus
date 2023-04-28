@@ -3,7 +3,7 @@
 
 
 
-ModbusSlave::ModbusSlave(ModbusType type) { modbus_type_ = type; }
+ModbusSlave::ModbusSlave(ModbusType type) { modbus_type_ = type; modbus_id_ = 1;}
 
 ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
     uint8_t* recv_data, uint8_t recv_len, uint8_t* send_data,
