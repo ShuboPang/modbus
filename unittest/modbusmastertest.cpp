@@ -15,7 +15,7 @@ int32_t ModbusMasterTest::SendData(uint8_t *data, int32_t len)
 
 void ModbusMasterTest::masterCoilsUpdate(int slave_id, int addr, int16_t value)
 {
-
+    slave[slave_id][addr] = value;
 }
 
 void ModbusMasterTest::masterHoldRegUpdate(int slave_id, int addr, int16_t value)
@@ -25,10 +25,10 @@ void ModbusMasterTest::masterHoldRegUpdate(int slave_id, int addr, int16_t value
 
 void ModbusMasterTest::masterDiscreteInputUpdate(int slave_id, int addr, int16_t value)
 {
-
+    slave[slave_id][addr] = value;
 }
 
 void ModbusMasterTest::masterInputRegistersUpdate(int slave_id, int addr, int16_t value)
 {
-
+    slave[slave_id][addr] = value;
 }

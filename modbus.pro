@@ -8,7 +8,7 @@ QT       -= core gui
 
 TARGET = modbus
 TEMPLATE = lib
-#CONFIG += staticlib
+CONFIG += staticlib
 
 VERSION = 1.0.0
 

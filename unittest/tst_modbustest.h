@@ -6,6 +6,7 @@
 #include<initializer_list>
 #include "modbusslavetest.h"
 #include "modbusmastertest.h"
+#include "crc.h"
 
 
 using namespace testing;
@@ -139,5 +140,50 @@ TEST(ModbusMasterUnitTest, ModbusMasterUnitTest_ReadHoldRegs)
     delete slave;
     delete master;
 }
+
+TEST(ModbusMasterUnitTest, ModbusMasterUnitTest_ReadCoils)
+{
+    uint16_t slave_id = 1;
+    uint16_t read_addr = 0x01;
+    int16_t value = 1;
+
+    DataInit();
+
+    ModbusSlaveTest* slave = new ModbusSlaveTest(ModbusSlaveTest::kModbusRtu);
+    slave->SetModbusID(slave_id);
+
+    ModbusMasterTest * master = new ModbusMasterTest(ModbusMasterTest::kModbusRtu);
+
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,
+                                            {0x01,0x01,static_cast<unsigned char>((read_addr>>8)&0x0ff),static_cast<unsigned char>((read_addr&0xff)),0x00,0x01});
+
+
+    recv_len = Crc::addCrc16(recv_buff,recv_len);
+    // 主站读 从站1 地址1 长度1
+    master->masterReadCoils(1,1,1);
+
+    EXPECT_EQ(recv_len,8);
+    for(uint32_t i = 0;i<recv_len;i++){
+        EXPECT_EQ(master->send_buff[i],recv_buff[i]);
+    }
+
+    slave->hold_regs[read_addr] = value;
+
+    // 从站处理主站的数据
+    ModbusSlave::ModbusReplyStatus status = slave->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+
+    // 主站处理从站的数据
+    ModbusSlaveTest::ModbusErrorCode error = ModbusSlaveTest::kModbusExceptionNone;
+    status = master->masterDataProcess(send_buff,send_len,&error);
+
+    EXPECT_EQ(status, ModbusMasterTest::kModbusSuccess);
+    EXPECT_EQ(error, ModbusMasterTest::kModbusExceptionNone);
+    EXPECT_EQ(value,master->slave[slave_id][read_addr]);
+
+    delete slave;
+    delete master;
+}
+
 
 #endif // TST_MODBUSTEST_H

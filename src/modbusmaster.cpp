@@ -30,15 +30,19 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(unsigned char* recv_da
         tmp_len = tmp_len << 8;
         tmp_len |=  recv_data[5];
 
-        if (tmp_len + MODBUS_RTU_CRC_LENGTH != recv_len) {
+        if (tmp_len + MODBUS_TCP_HEAD != recv_len) {
             return kModbusDataError;
         }
         // modbus tcp 前6个字节为头部
-        realPos = MODBUS_RTU_CRC_LENGTH;
+        realPos = MODBUS_TCP_HEAD;
         recv_len -= realPos;
         tcp_head_count = recv_data[0];
         tcp_head_count = tcp_head_count << 8;
         tcp_head_count |= recv_data[1];
+
+        if(tcp_head_count  != serial_number){
+            return kModbusNotMatch;
+        }
     }
 
     //< 解析Modbus 从站数据
@@ -62,35 +66,37 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(unsigned char* recv_da
         return kModbusNotMatch;
     }
 
-    //< 只有读操作才判断
-    if(fun_code == kReadCoils ||
-        fun_code == kReadDiscreteInputs ||
-        fun_code == kReadHoldingRegisters ||
-        fun_code == kReadInputRegisters){
-
-        if(len % 2 != 0){
-            return kModbusLengthError;
+    if(fun_code == kReadCoils){
+        for(uint32_t i = 0;i<op.len;i++){
+            uint32_t addr = op.addr + i;
+            uint8_t value = data[i/8];
+            this->masterCoilsUpdate(modbusID,addr,GET_BIT(value,i%8));
         }
-
-        for(uint32_t i = 0;i<len;i+= 2){
-            uint32_t addr = op.addr + i/2;
-            int16_t value = data[i];
+    }
+    else if(fun_code == kReadDiscreteInputs){
+        for(uint32_t i = 0;i<op.len;i++){
+            uint32_t addr = op.addr + i;
+            uint8_t value = data[i/8];
+            this->masterDiscreteInputUpdate(modbusID,addr,GET_BIT(value,i%8));
+        }
+    }
+    else if(fun_code == kReadHoldingRegisters) {
+        for(uint32_t i = 0;i<op.len;i++){
+            uint32_t addr = op.addr + i;
+            int16_t value = data[i*2+0];
             value = value << 8;
-            value |= data[i+1];
-            switch (fun_code) {
-            case kReadCoils:             // 0x01
-                this->masterCoilsUpdate(modbusID,addr,value);
-                break;
-            case kReadDiscreteInputs:    // 0x02
-                this->masterDiscreteInputUpdate(modbusID,addr,value);
-                break;
-            case kReadHoldingRegisters:  // 0x03
-                this->masterHoldRegUpdate(modbusID,addr,value);
-                break;
-            case kReadInputRegisters:    // 0x04
-                this->masterInputRegistersUpdate(modbusID,addr,value);
-                break;
-            }
+            value |= data[i*2+1];
+            this->masterHoldRegUpdate(modbusID,addr,value);
+
+        }
+    }
+    else if(fun_code == kReadInputRegisters) {
+        for(uint32_t i = 0;i<op.len;i++){
+            uint32_t addr = op.addr + i;
+            int16_t value = data[i*2+0];
+            value = value << 8;
+            value |= data[i*2+1];
+            this->masterInputRegistersUpdate(modbusID,addr,value);
         }
     }
     this->serial_number++;

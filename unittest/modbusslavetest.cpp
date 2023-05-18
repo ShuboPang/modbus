@@ -27,11 +27,16 @@ Modbus::ModbusErrorCode ModbusSlaveTest::slaveWriteHoldRegHandle(uint16_t addr, 
 
 Modbus::ModbusErrorCode ModbusSlaveTest::slaveReadCoilHandle(uint16_t addr, uint16_t *value)
 {
+    if(hold_regs.find(addr) != hold_regs.end()){
+        *value = hold_regs[addr];
+        return kModbusExceptionNone;
+    }
     return kModbusExceptionNone;
 }
 
 Modbus::ModbusErrorCode ModbusSlaveTest::slaveWriteCoilHandle(uint16_t addr, uint16_t value)
 {
+    hold_regs[addr] = value;
     return kModbusExceptionNone;
 }
 
