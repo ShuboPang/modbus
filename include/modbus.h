@@ -22,7 +22,7 @@
 #define PRINT_HEX(note, source, len) \
   printByteToHex(note, source, len, __FILE__, __FUNCTION__, __LINE__)
 
-void printByteToHex(const char* note, const unsigned char* source,
+void printByteToHex(const char* note, const uint8_t* source,
                     int source_len, const char* file, const char* function,
                     int line);
 
@@ -50,15 +50,10 @@ public:
         kModbusExceptionMax
     };
 
-        enum ModbusType {
-            kModbusAscii = 0,  //
-            kModbusRtu = 1,
-            kModbusTcp = 2,
-            };
-
-    enum ModbusMode {
-        kModbusHost,   // modbus主站
-        kModbusSlave,  // modbu从站
+    enum ModbusType {
+        kModbusAscii = 0,  //
+        kModbusRtu = 1,
+        kModbusTcp = 2,
     };
 
     enum ModbusFunctionCode {
@@ -101,7 +96,7 @@ public:
     /// \param len
     /// \return                 返回添加后的数据长度
     ///
-    unsigned int addTcpHeader(unsigned char* ptr, uint16_t len);
+    unsigned int addTcpHeader(uint8_t* ptr, uint16_t len);
 
     ///
     /// \brief addHeaderAndTailMessage      添加modbusTcp头部或modbusRtu校验和
@@ -109,7 +104,7 @@ public:
     /// \param len                          数据长度
     /// \return                             添加帧信息后数据长度
     ///
-    unsigned int addHeaderAndTailMessage(unsigned char* ptr, unsigned char len);
+    unsigned int addHeaderAndTailMessage(uint8_t* ptr, uint8_t len);
 
 protected:
     ModbusType modbus_type_;  // 0:modbus ascii 1:modbus rtu  2:modbus tcp

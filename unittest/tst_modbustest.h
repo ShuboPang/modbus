@@ -53,6 +53,51 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_CrcError)
 }
 
 ///
+/// \brief TEST   测试数据长度不够的情况
+///
+TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_Buff)
+{
+    DataInit();
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusRtu);
+
+    //< 错误的校验和测试
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x01,0x03,0x00});
+    test->SetModbusID(1);
+    ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusDataError);
+
+    delete test;
+}
+
+TEST(ModbusSlaveTcpUnitTest, ModbusSlaveUnitTest_Buff)
+{
+    DataInit();
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusTcp);
+
+    //< 错误的校验和测试
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x01,0x03,0x00});
+    test->SetModbusID(1);
+    ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusDataError);
+
+    delete test;
+}
+
+TEST(ModbusSlaveTcpUnitTest, ModbusSlaveUnitTest_BuffOk)
+{
+    DataInit();
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusTcp);
+
+    //< 错误的校验和测试
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x03,0x00,0x01,0x00,0x01});
+    test->SetModbusID(1);
+    ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+
+    delete test;
+}
+
+///
 /// \brief TEST  测试正常modbus帧是否能正常解析
 ///
 TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_CrcOk)
@@ -64,6 +109,57 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_CrcOk)
     test->SetModbusID(1);
     ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
     EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+
+    delete test;
+}
+
+///
+/// \brief TEST 测试ModbusID
+///
+TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_ID)
+{
+    DataInit();
+    ModbusSlave::ModbusReplyStatus status;
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusRtu);
+    test->SetModbusID(1);
+
+    //< 接收到的ID 为0时不回复
+
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x00,0x03,0x00,0x01,0x00,0x01});
+    recv_len = Crc::addCrc16(recv_buff,recv_len);
+    status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+    EXPECT_EQ(send_len, 0);
+
+    //< 接收到的ID 为254时 正常回复
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0xfe,0x03,0x00,0x01,0x00,0x01});
+    recv_len = Crc::addCrc16(recv_buff,recv_len);
+    status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+    EXPECT_EQ(send_buff[0], 1);
+
+    delete test;
+}
+
+TEST(ModbusSlaveTcpUnitTest, ModbusSlaveUnitTest_ID)
+{
+    DataInit();
+    ModbusSlave::ModbusReplyStatus status;
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusTcp);
+    test->SetModbusID(1);
+
+    //< 接收到的ID 为0时不回复
+
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x00,0x03,0x00,0x00,0x00,0x06,0x00,0x03,0x00,0x01,0x00,0x01});
+    status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+    EXPECT_EQ(send_len, 0);
+
+    //< 接收到的ID 为254时 正常回复
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x00,0x03,0x00,0x00,0x00,0x06,0xfe,0x03,0x00,0x01,0x00,0x01});
+    status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+    EXPECT_EQ(send_buff[6], 1);
 
     delete test;
 }
@@ -83,6 +179,26 @@ TEST(ModbusSlaveUnitTest, ModbusSlaveUnitTest_ReadHoldRegs)
     EXPECT_EQ(send_buff[0],0x01);
     EXPECT_EQ(send_buff[1],0x83);
     EXPECT_EQ(send_buff[2],0x02);
+
+    delete test;
+}
+
+TEST(ModbusSlaveTcpUnitTest, ModbusSlaveUnitTest_ReadHoldRegs)
+{
+    DataInit();
+    ModbusSlaveTest* test = new ModbusSlaveTest(ModbusSlaveTest::kModbusTcp);
+
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,{0x00,0x03,0x00,0x00,0x00,0x06,0x01,0x03,0x00,0x01,0x00,0x01});
+    test->SetModbusID(1);
+    ModbusSlave::ModbusReplyStatus status = test->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+    EXPECT_EQ(send_buff[0],0x00);
+    EXPECT_EQ(send_buff[1],0x03);
+    EXPECT_EQ(send_buff[5],0x03);
+
+    EXPECT_EQ(send_buff[6],0x01);
+    EXPECT_EQ(send_buff[7],0x83);
+    EXPECT_EQ(send_buff[8],0x02);
 
     delete test;
 }
@@ -140,6 +256,60 @@ TEST(ModbusMasterUnitTest, ModbusMasterUnitTest_ReadHoldRegs)
     delete slave;
     delete master;
 }
+
+///
+/// \brief TEST     测试写保持寄存器
+///
+/// 1. 设置从站id为1  地址1中的值为123
+/// 2. 使用主站接口设置从站1 地址1 值为0xff
+/// 3. 判断从站1 地址1 中的值是否为 0xff
+///
+TEST(ModbusMasterUnitTest, ModbusMasterUnitTest_WriteHoldRegs)
+{
+    uint16_t slave_id = 1;
+    uint16_t read_addr = 0x01;
+    int16_t value = 123;
+    int16_t value1 = 0xff;
+
+    DataInit();
+
+    ModbusSlaveTest* slave = new ModbusSlaveTest(ModbusSlaveTest::kModbusRtu);
+    slave->SetModbusID(slave_id);
+    slave->hold_regs[read_addr] = value;
+
+
+    ModbusMasterTest * master = new ModbusMasterTest(ModbusMasterTest::kModbusRtu);
+
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,
+               {0x01,0x06,static_cast<unsigned char>((read_addr>>8)&0x0ff),static_cast<unsigned char>((read_addr&0xff)),static_cast<unsigned char>((value1>>8)&0x0ff),static_cast<unsigned char>((value1&0xff))});
+    recv_len = Crc::addCrc16(recv_buff,recv_len);
+
+
+    // 主站读 从站1 地址1 长度1
+    master->masterWriteSingleRegister(slave_id,read_addr,value1);
+
+    EXPECT_EQ(recv_len,8);
+    for(uint32_t i = 0;i<recv_len;i++){
+        EXPECT_EQ(master->send_buff[i],recv_buff[i]);
+    }
+
+
+    // 从站处理主站的数据
+    ModbusSlave::ModbusReplyStatus status = slave->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+
+    // 主站处理从站的数据
+    ModbusSlaveTest::ModbusErrorCode error = ModbusSlaveTest::kModbusExceptionNone;
+    status = master->masterDataProcess(send_buff,send_len,&error);
+
+    EXPECT_EQ(status, ModbusMasterTest::kModbusSuccess);
+    EXPECT_EQ(error, ModbusMasterTest::kModbusExceptionNone);
+    EXPECT_EQ(value1,slave->hold_regs[read_addr]);
+
+    delete slave;
+    delete master;
+}
+
 
 TEST(ModbusMasterUnitTest, ModbusMasterUnitTest_ReadCoils)
 {

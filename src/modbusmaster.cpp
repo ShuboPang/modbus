@@ -3,7 +3,7 @@
 
 ModbusMaster::ModbusMaster(ModbusType type) { modbus_type_ = type; }
 
-Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(unsigned char* recv_data, int recv_len,ModbusErrorCode* err_code)
+Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, int recv_len,ModbusErrorCode* err_code)
 {
     int realPos = 0;      //< TCP : 6  rtu:0
     uint32_t tcp_head_count = 0;
@@ -15,7 +15,7 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(unsigned char* recv_da
         // Crc校验
         uint16_t crc0 =
             (recv_data[recv_len - 2]) | ((uint16_t)recv_data[recv_len - 1] << 8);
-        uint16_t crc1 = Crc::crc16((unsigned char*)recv_data, recv_len - MODBUS_RTU_CRC_LENGTH);
+        uint16_t crc1 = Crc::crc16((uint8_t*)recv_data, recv_len - MODBUS_RTU_CRC_LENGTH);
 
         if (crc1 != crc0) {
             return kModbusDataError;
@@ -274,7 +274,7 @@ int ModbusMaster::masterWriteSingleRegister(int slave_id, int start_addr,
 /// \return
 ///
 int ModbusMaster::masterWriteCoils(int slave_id, int start_addr, int coil_len,
-                                   unsigned char* value_data) {
+                                   uint8_t* value_data) {
     int i = 0;
     uint8_t send_buff[MODBUS_MAX_PRIVATE_BUFFER_LEN]= {0};
     send_buff[i++] = slave_id;
@@ -308,7 +308,7 @@ int ModbusMaster::masterWriteCoils(int slave_id, int start_addr, int coil_len,
 /// \return
 ///
 int ModbusMaster::masterWriteRegisters(int slave_id, int start_addr, int reg_len,
-                                       unsigned char* value_data) {
+                                       uint8_t* value_data) {
     int i = 0;
     uint8_t send_buff[MODBUS_MAX_PRIVATE_BUFFER_LEN]= {0};
     send_buff[i++] = slave_id;
@@ -337,22 +337,22 @@ int32_t ModbusMaster::SendData(uint8_t *data, int32_t len)
     return 0;
 }
 
-void ModbusMaster::masterCoilsUpdate(int slave_id, int addr, int16_t value)
+void ModbusMaster::masterCoilsUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }
 
-void ModbusMaster::masterHoldRegUpdate(int slave_id, int addr, int16_t value)
+void ModbusMaster::masterHoldRegUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }
 
-void ModbusMaster::masterDiscreteInputUpdate(int slave_id, int addr, int16_t value)
+void ModbusMaster::masterDiscreteInputUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }
 
-void ModbusMaster::masterInputRegistersUpdate(int slave_id, int addr, int16_t value)
+void ModbusMaster::masterInputRegistersUpdate(uint16_t slave_id, uint16_t addr, int16_t value)
 {
 
 }

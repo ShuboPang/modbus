@@ -15,10 +15,10 @@ public:
     int32_t SendData(uint8_t * data,int32_t len) override;
 
 public:
-    void masterCoilsUpdate(int slave_id, int addr,int16_t value) override;
-    void masterHoldRegUpdate(int slave_id, int addr,int16_t value) override ;
-    void masterDiscreteInputUpdate(int slave_id, int addr,int16_t value) override;
-    void masterInputRegistersUpdate(int slave_id, int addr,int16_t value) override;
+    void masterCoilsUpdate(uint16_t slave_id, uint16_t addr,int16_t value) override;
+    void masterHoldRegUpdate(uint16_t slave_id, uint16_t addr,int16_t value) override ;
+    void masterDiscreteInputUpdate(uint16_t slave_id, uint16_t addr,int16_t value) override;
+    void masterInputRegistersUpdate(uint16_t slave_id, uint16_t addr,int16_t value) override;
 
 public:
     SLAVE_REGISTER_MAP slave;

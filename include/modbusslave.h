@@ -22,8 +22,8 @@ public:
     /// \param send_len             从站回复数据
     /// \return     从站接收到的数据是否为modbus数据帧格式
     ///
-    ModbusReplyStatus slaveDataProcess(unsigned char* recv_data, uint8_t recv_len,
-                                       unsigned char* send_data, uint8_t* send_len);
+    ModbusReplyStatus slaveDataProcess(uint8_t* recv_data, uint8_t recv_len,
+                                       uint8_t* send_data, uint8_t* send_len);
 
     //// 从机收到主站数据后调用
     // 读保持寄存器
@@ -66,7 +66,7 @@ private:
     /// \return
     ///
     ModbusErrorCode dataAnalyze(int fun_code, int addr, int len,
-                                uint16_t* recv_data, unsigned char* send_data);
+                                uint16_t* recv_data, uint8_t* send_data);
 
     ///
     /// \brief dataReply
@@ -78,7 +78,7 @@ private:
     /// \param sendLen
     ///
     void dataReply(int fun_code, int addr, int len, uint16_t* recv_data,
-                   unsigned char* send_buff, uint8_t *send_len);
+                   uint8_t* send_buff, uint8_t *send_len);
 
     ///
     /// \brief errorReply
@@ -86,7 +86,7 @@ private:
     /// \param errCode
     /// \param sendBuff
     ///
-    void errorReply(int fun_code, int errCode, unsigned char* sendBuff);
+    void errorReply(int fun_code, int errCode, uint8_t* sendBuff);
 
 private:
     int modbus_id_;  // 从站设置  modbus id
