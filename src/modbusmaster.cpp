@@ -67,6 +67,9 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
     }
 
     if(fun_code == kReadCoils){
+        if((op.len / 8 +(op.len % 8 == 0?0:1)) != len){
+            return kModbusNotMatch;
+        }
         for(uint32_t i = 0;i<op.len;i++){
             uint32_t addr = op.addr + i;
             uint8_t value = data[i/8];
@@ -74,6 +77,9 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
         }
     }
     else if(fun_code == kReadDiscreteInputs){
+        if((op.len / 8 +1) != len){
+            return kModbusNotMatch;
+        }
         for(uint32_t i = 0;i<op.len;i++){
             uint32_t addr = op.addr + i;
             uint8_t value = data[i/8];
@@ -81,6 +87,9 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
         }
     }
     else if(fun_code == kReadHoldingRegisters) {
+        if((op.len * 2) != len){
+            return kModbusNotMatch;
+        }
         for(uint32_t i = 0;i<op.len;i++){
             uint32_t addr = op.addr + i;
             int16_t value = data[i*2+0];
@@ -91,6 +100,9 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
         }
     }
     else if(fun_code == kReadInputRegisters) {
+        if((op.len * 2) != len){
+            return kModbusNotMatch;
+        }
         for(uint32_t i = 0;i<op.len;i++){
             uint32_t addr = op.addr + i;
             int16_t value = data[i*2+0];

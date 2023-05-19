@@ -283,12 +283,23 @@ ModbusSlave::ModbusErrorCode ModbusSlave::dataAnalyze(
 void ModbusSlave::dataReply(int fun_code, int addr, int len,
                             uint16_t* recv_data, uint8_t* send_buff,
                             uint8_t* send_len) {
-    char buff[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
+    uint8_t buff[MODBUS_MAX_PRIVATE_BUFFER_LEN] = {0};
     buff[0] = (uint8_t)modbus_id_;
     buff[1] = (uint8_t)fun_code;
     switch (fun_code) {
     case kReadCoils:             // 0x01
     case kReadDiscreteInputs:    // 0x02
+        buff[2] = len/8+((len%8)?1:0);
+        for (uint32_t i = 0; i < buff[2]; i++) {
+            buff[3 + i] = 0;;
+        }
+        for (uint32_t i = 0; i < len; i++) {
+            buff[3 + i/8] |= send_buff[i] << (i%8);
+        }
+        len = buff[2] + 3;
+        *send_len = len;
+        memcpy(send_buff, buff, len);
+        break;
     case kReadHoldingRegisters:  // 0x03
     case kReadInputRegisters:    // 0x04
         buff[2] = (len * 2) & 0xff;
