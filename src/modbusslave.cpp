@@ -289,9 +289,9 @@ void ModbusSlave::dataReply(int fun_code, int addr, int len,
     switch (fun_code) {
     case kReadCoils:             // 0x01
     case kReadDiscreteInputs:    // 0x02
-        buff[2] = len/8+((len%8)?1:0);
+        buff[2] = len/8+(((len%8) == 0)?0:1);
         for (uint32_t i = 0; i < buff[2]; i++) {
-            buff[3 + i] = 0;;
+            buff[3 + i] = 0;
         }
         for (uint32_t i = 0; i < len; i++) {
             buff[3 + i/8] |= send_buff[i] << (i%8);

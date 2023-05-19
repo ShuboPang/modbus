@@ -343,6 +343,51 @@ TEST(ModbusMasterUnitTest, ModbusMasterUnitTest_ReadCoils)
     ModbusSlave::ModbusReplyStatus status = slave->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
     EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
 
+     EXPECT_EQ(send_len, 6);
+    // 主站处理从站的数据
+    ModbusSlaveTest::ModbusErrorCode error = ModbusSlaveTest::kModbusExceptionNone;
+    status = master->masterDataProcess(send_buff,send_len,&error);
+
+    EXPECT_EQ(status, ModbusMasterTest::kModbusSuccess);
+    EXPECT_EQ(error, ModbusMasterTest::kModbusExceptionNone);
+    EXPECT_EQ(value,master->slave[slave_id][read_addr]);
+
+    delete slave;
+    delete master;
+}
+
+
+TEST(ModbusMasterTcpUnitTest, ModbusMasterUnitTest_ReadCoils)
+{
+    uint16_t slave_id = 1;
+    uint16_t read_addr = 0x01;
+    int16_t value = 1;
+
+    DataInit();
+
+    ModbusSlaveTest* slave = new ModbusSlaveTest(ModbusSlaveTest::kModbusTcp);
+    slave->SetModbusID(slave_id);
+
+    ModbusMasterTest * master = new ModbusMasterTest(ModbusMasterTest::kModbusTcp);
+
+    recv_len = ModbusSlaveTest::SetBuffData(recv_buff,
+                                            {0x00,0x01,0x00,0x00,0x00,0x06,0x01,0x01,static_cast<unsigned char>((read_addr>>8)&0x0ff),static_cast<unsigned char>((read_addr&0xff)),0x00,0x01});
+
+    // 主站读 从站1 地址1 长度1
+    master->masterReadCoils(1,1,1);
+
+    EXPECT_EQ(recv_len,12);
+    for(uint32_t i = 0;i<recv_len;i++){
+        EXPECT_EQ(master->send_buff[i],recv_buff[i]);
+    }
+
+    slave->hold_regs[read_addr] = value;
+
+    // 从站处理主站的数据
+    ModbusSlave::ModbusReplyStatus status = slave->slaveDataProcess(recv_buff,recv_len,send_buff,&send_len);
+    EXPECT_EQ(status, ModbusSlave::kModbusSuccess);
+
+    EXPECT_EQ(send_len, 10);
     // 主站处理从站的数据
     ModbusSlaveTest::ModbusErrorCode error = ModbusSlaveTest::kModbusExceptionNone;
     status = master->masterDataProcess(send_buff,send_len,&error);

@@ -67,7 +67,7 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
     }
 
     if(fun_code == kReadCoils){
-        if((op.len / 8 +(op.len % 8 == 0?0:1)) != len){
+        if((op.len / 8 +((op.len % 8) == 0?0:1)) != len){
             return kModbusNotMatch;
         }
         for(uint32_t i = 0;i<op.len;i++){
