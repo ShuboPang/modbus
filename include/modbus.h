@@ -108,7 +108,7 @@ public:
 
 protected:
     ModbusType modbus_type_;  // 0:modbus ascii 1:modbus rtu  2:modbus tcp
-    uint16_t serial_number;      //<      tcp的流水号
+    uint16_t serial_number_;      //<      tcp的流水号
 };
 
 #endif  // MODBUS_H

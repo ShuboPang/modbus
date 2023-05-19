@@ -88,15 +88,14 @@ void printByteToHex(const char* note, const uint8_t* source,
     delete[] hex_str;
 }
 
-Modbus::Modbus() { modbus_type_ = kModbusRtu; serial_number = 1;}
+Modbus::Modbus() { modbus_type_ = kModbusRtu; serial_number_ = 1;}
 
-Modbus::Modbus(Modbus::ModbusType type) { modbus_type_ = type; serial_number = 1;}
+Modbus::Modbus(Modbus::ModbusType type) { modbus_type_ = type; serial_number_ = 1;}
 
 uint8_t Modbus::SetBuffData(uint8_t* data,std::initializer_list<uint8_t> li){
     uint8_t i = 0;
-    for(auto beg=li.begin(); beg!=li.end(); ++beg){
+    for(auto beg=li.begin(); beg!=li.end(); ++beg, ++i){
         data[i] =  *beg;
-        ++i;
     }
     return i;
 }
@@ -117,8 +116,8 @@ unsigned int Modbus::addTcpHeader(uint8_t* ptr, uint16_t len) {
     memset(ptr, 0, len + 6);
     memcpy(ptr, tmp, len + 6);
 
-    ptr[0] = (serial_number>>8)&0xff;
-    ptr[1] = serial_number&0xff;
+    ptr[0] = (serial_number_>>8)&0xff;
+    ptr[1] = serial_number_&0xff;
 
     ptr[4] = (len >> 8)&0xff;
     ptr[5] = len&0xff;

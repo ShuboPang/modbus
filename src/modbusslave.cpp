@@ -44,7 +44,7 @@ ModbusSlave::ModbusReplyStatus ModbusSlave::slaveDataProcess(
         uint16_t tcp_head_count = recv_data[0];
         tcp_head_count = tcp_head_count << 8;
         tcp_head_count |= recv_data[1];
-        serial_number = tcp_head_count;
+        serial_number_ = tcp_head_count;
     }
 
     uint16_t modbusID = recv_data[realPos + MODBUS_ID_POS];

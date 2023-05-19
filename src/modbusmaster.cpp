@@ -40,7 +40,7 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
         tcp_head_count = tcp_head_count << 8;
         tcp_head_count |= recv_data[1];
 
-        if(tcp_head_count  != serial_number){
+        if(tcp_head_count  != serial_number_){
             return kModbusNotMatch;
         }
     }
@@ -111,7 +111,7 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
             this->masterInputRegistersUpdate(modbusID,addr,value);
         }
     }
-    this->serial_number++;
+    this->serial_number_++;
     return kModbusSuccess;
 }
 
