@@ -5,7 +5,7 @@ ModbusMaster::ModbusMaster(ModbusType type) { modbus_type_ = type; }
 
 Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, int recv_len,ModbusErrorCode* err_code)
 {
-    int realPos = 0;      //< TCP : 6  rtu:0
+    int real_pos = 0;      //< TCP : 6  rtu:0
     uint32_t tcp_head_count = 0;
     // 数据校验  去除头部和尾部
     if (modbus_type_ == kModbusRtu) {
@@ -34,8 +34,8 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
             return kModbusDataError;
         }
         // modbus tcp 前6个字节为头部
-        realPos = MODBUS_TCP_HEAD;
-        recv_len -= realPos;
+        real_pos = MODBUS_TCP_HEAD;
+        recv_len -= real_pos;
         tcp_head_count = recv_data[0];
         tcp_head_count = tcp_head_count << 8;
         tcp_head_count |= recv_data[1];
@@ -46,10 +46,10 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
     }
 
     //< 解析Modbus 从站数据
-    uint16_t modbusID = recv_data[realPos + MODBUS_ID_POS];
-    uint16_t fun_code = recv_data[realPos + MODBUS_FUNCODE_POS];
-    uint16_t len = recv_data[realPos + 2];
-    uint8_t* data = recv_data + realPos+3;
+    uint16_t modbusID = recv_data[real_pos + MODBUS_ID_POS];
+    uint16_t fun_code = recv_data[real_pos + MODBUS_FUNCODE_POS];
+    uint16_t len = recv_data[real_pos + 2];
+    uint8_t* data = recv_data + real_pos+3;
 
 
     //< 从站返回的数据与主站不匹配
@@ -60,7 +60,7 @@ Modbus::ModbusReplyStatus ModbusMaster::masterDataProcess(uint8_t* recv_data, in
     if(fun_code != op.funcode){
         uint8_t fun = op.funcode | (1<<7);
         if(fun_code == fun){        //< 从站返回错误帧
-            *err_code = (ModbusErrorCode)recv_data[realPos + 2];
+            *err_code = (ModbusErrorCode)recv_data[real_pos + 2];
             return kModbusSuccess;
         }
         return kModbusNotMatch;
